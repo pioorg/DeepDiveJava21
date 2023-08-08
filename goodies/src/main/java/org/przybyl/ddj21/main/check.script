@@ -1,0 +1,18 @@
+#!/usr/bin/env -S java --enable-preview --source 21
+
+// In GNU/Linux the -S can be used since env version 8.30
+// for other OSes and older env versions you may need to use absolute shebang
+
+class Catch22 {
+     void main() {
+        System.out.println("This is Java Script! 👿");
+        System.out.println("Hello from "+ Runtime.version());
+        System.out.println("New instance main in unnamed class, without arg(s).");
+        System.out.println("Is the class unnamed? " + this.getClass().isUnnamedClass());
+        System.out.println("The class name is " + this.getClass().getName() + "...?");
+        System.out.println("And the modifiers are [" + java.lang.reflect.Modifier.toString(this.getClass().getModifiers())+"]");
+        System.out.println("(The package name is [" +this.getClass().getPackage().getName()+"])");
+    }
+}
+
+// In this case the compiler chooses HelloWorld for the class name as an implementation detail, but that name still cannot be used directly in Java source code.
