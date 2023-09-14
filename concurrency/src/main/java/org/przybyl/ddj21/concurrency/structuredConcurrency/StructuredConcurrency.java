@@ -37,10 +37,10 @@ public class StructuredConcurrency {
         var start = Instant.now();
         Map<String, Integer> result = Map.of();
         try {
-//            result = sequentialScoreBoard();
+            result = sequentialScoreBoard();
 //            result = futuredScoreBoard();
 //            result = structuredScoreBoard();
-            result = misusedScoreBoard();
+//            result = misusedScoreBoard();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             // in production code most probably you don't want to ignore exceptions like this

@@ -21,7 +21,7 @@ import java.time.Instant;
 
 public class VirtThreadsLimits {
 
-    private final static Duration EMULATE_WORK_FOR = Duration.ofSeconds(6);
+    private final static Duration EMULATE_WORK_FOR = Duration.ofSeconds(10);
 
     public static void main(String[] args) throws InterruptedException {
         Instant start = Instant.now();
@@ -45,9 +45,9 @@ public class VirtThreadsLimits {
 
     private static Thread createThread(int i) {
         Runnable job = () -> blockingOperation(i);
-//        return new Thread(job);
+        return new Thread(job);
 //        return Thread.ofVirtual().unstarted(job);
-        return Thread.ofPlatform().unstarted(job);
+//        return Thread.ofPlatform().unstarted(job);
     }
 
     static void blockingOperation(int task) {
