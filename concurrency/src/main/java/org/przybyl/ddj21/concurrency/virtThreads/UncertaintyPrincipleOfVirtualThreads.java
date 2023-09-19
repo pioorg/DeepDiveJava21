@@ -51,7 +51,7 @@ public class UncertaintyPrincipleOfVirtualThreads {
 //        logger.info("Started with PID [" + ProcessHandle.current().pid() + "]");
 
         streamedTasks();
-        virtuallyThreadedTasks();
+//        virtuallyThreadedTasks();
 
         Thread.sleep(Duration.ofSeconds(6));
         logger.info("Tasks: started [%d], finished [%d]".formatted(startedTasks.get(), finishedTasks.get()));
@@ -77,10 +77,10 @@ public class UncertaintyPrincipleOfVirtualThreads {
 
 //        Thread.sleep(10);
 
-        Thread.ofPlatform().daemon(true).name("stream-2").start(() -> {
-            System.out.println("Started " + Thread.currentThread() + " to do some OTHER work");
-            IntStream.range(100, 200).parallel().forEach(UncertaintyPrincipleOfVirtualThreads::handleTask);
-        });
+//        Thread.ofPlatform().daemon(true).name("stream-2").start(() -> {
+//            System.out.println("Started " + Thread.currentThread() + " to do some OTHER work");
+//            IntStream.range(100, 200).parallel().forEach(UncertaintyPrincipleOfVirtualThreads::handleTask);
+//        });
     }
 
     public static void handleTask(int id) {
@@ -108,6 +108,9 @@ public class UncertaintyPrincipleOfVirtualThreads {
         long stop = System.nanoTime() + ms * 1_000_000;
         long mod = -1;
         while (System.nanoTime() < stop) {
+//            if (Thread.interrupted()) {
+//                throw new RuntimeException("I should have been interrupted exception, sorry!");
+//            }
             long a = rand.nextLong(1_000_000_000, 1_000_000_000_000L);
             long b = rand.nextLong(1_000_000, 1_000_000_000);
             mod = a % b;

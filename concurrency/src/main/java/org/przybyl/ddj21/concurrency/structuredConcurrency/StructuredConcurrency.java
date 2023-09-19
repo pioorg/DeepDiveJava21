@@ -88,8 +88,8 @@ public class StructuredConcurrency {
 //                System.out.println("fork outside");
 //                return null;
 //            })).start();
-            scope.join();
-//            scope.throwIfFailed();
+//            scope.join();
+            scope.throwIfFailed();
             var names = namesSubtask.get();
             var scores = scoresSubtask.get();
             return combine(names, scores);

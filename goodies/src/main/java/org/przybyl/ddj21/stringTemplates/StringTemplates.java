@@ -73,7 +73,6 @@ public class StringTemplates {
 
         for (x = 0; x < 3; x++) {
             for (y = 0; y < 3; y++) {
-                rawStringTemplate = java.lang.StringTemplate.RAW. "The result of \{x} x \{y} is \{x*y}.";
                 System.out.println(rawStringTemplate);
                 System.out.println(rawStringTemplate.interpolate());
             }
@@ -81,8 +80,7 @@ public class StringTemplates {
     }
 
     private static void customTemplates() {
-        record Op(BiFunction<Integer, Integer, Integer> fun, String rep) {
-        }
+        record Op(BiFunction<Integer, Integer, Integer> fun, String rep) {}
         var BASIC_MATH = StringTemplate.Processor.of(
             (StringTemplate st) -> {
                 if (st.values().size() % 3 != 0) {

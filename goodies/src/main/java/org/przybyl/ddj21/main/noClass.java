@@ -18,7 +18,7 @@
 
 /*
 ####################################################################
- Call this file with java --source 21 --enable-preview NoClass.java
+ Call this file with java --source 21 --enable-preview noClass.java
 ####################################################################
 */
 

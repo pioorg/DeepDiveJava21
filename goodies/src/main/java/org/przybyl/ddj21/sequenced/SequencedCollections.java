@@ -36,8 +36,8 @@ public class SequencedCollections {
     private static final Random random = new Random();
 
     public static void main(String[] args) {
-//        demoCollection();
-        demoMap();
+        demoCollection();
+//        demoMap();
     }
 
     private static void demoCollection() {

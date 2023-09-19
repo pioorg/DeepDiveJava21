@@ -21,7 +21,17 @@ package org.przybyl.ddj21.varia;
 // java org/przybyl/ddj21/varia/Varia.java
 public class Varia {
     public static void main(String[] args) {
-
+        String test = "\uD83E\uDD26\uFE0F";
+        for (char c : test.toCharArray()) {
+            var emoji = Character.isEmoji(c);
+            var component = Character.isEmojiComponent(c);
+            var modifier = Character.isEmojiModifier(c);
+            var modifierBase = Character.isEmojiModifierBase(c);
+            var presentation = Character.isEmojiPresentation(c);
+            System.out.println("ENDE!");
+        }
     }
+
+    // consider reading https://www.smashingmagazine.com/2016/11/character-sets-encoding-emoji/
 
 }
