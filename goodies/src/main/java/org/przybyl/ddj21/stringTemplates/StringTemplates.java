@@ -36,7 +36,7 @@ public class StringTemplates {
         var utc = ZoneId.of("UTC");
         var _duration = Duration.ofSeconds(1);
 
-        String intro = STR. """
+        String intro = STR."""
             Full name: \{firstName} \{middleName} \{lastName}
             Born in: \{born.atZone(ZoneId.of("UTC")).getYear()}
             (Exactly \{Duration.between(born, Instant.now()).getSeconds()} seconds ago)""";
@@ -44,13 +44,13 @@ public class StringTemplates {
         System.out.println(intro);
 
         String deeper = "deeper";
-        String goDeeper = STR. "go \{deeper}";
+        String goDeeper = STR."go \{deeper}";
         System.out.println(STR."We have to \{goDeeper}...");
         System.out.println(STR."We have to \{STR."go \{
             deeper
         } again "}...");
 
-        String json = STR. """
+        String json = STR."""
             {
               "fullName" : "\{firstName} \{middleName} \{lastName}",
               "yearOfBirth" : \{born.atZone(ZoneId.of("UTC")).getYear()}
@@ -58,21 +58,22 @@ public class StringTemplates {
             """;
         System.out.println(json);
 
-        System.out.println(java.util.FormatProcessor.FMT. """
+        System.out.println(java.util.FormatProcessor.FMT."""
             Formatted year: %tY\{born.atZone(ZoneId.of("UTC"))}
             """);
     }
 
     private static void moreTemplates() {
         int x = 0, y = 0;
-        StringTemplate rawStringTemplate = java.lang.StringTemplate.RAW. "\{x} x \{y} = \{x*y}";
+        StringTemplate rawStringTemplate = java.lang.StringTemplate.RAW."\{x} x \{y} = \{x*y}";
         System.out.println(rawStringTemplate.fragments());
         System.out.println(rawStringTemplate.values());
-        String strString = java.lang.StringTemplate.STR. "\{x} x \{y} = \{x*y}";
+        String strString = java.lang.StringTemplate.STR."\{x} x \{y} = \{x*y}";
 
 
         for (x = 0; x < 3; x++) {
             for (y = 0; y < 3; y++) {
+//                rawStringTemplate = java.lang.StringTemplate.RAW."\{x} x \{y} = \{x*y}";
                 System.out.println(rawStringTemplate);
                 System.out.println(rawStringTemplate.interpolate());
             }
@@ -124,7 +125,7 @@ public class StringTemplates {
         Op multiply = new Op((a, b) -> a * b, "x");
         Op add = new Op(Integer::sum, "+");
         Op sub = new Op((a, b) -> a - b, "-");
-        String poorMT = BASIC_MATH. """ 
+        String poorMT = BASIC_MATH."""
             \{12} \{add} \{7}, therefore \{19} \{sub} \{7}.
             Moreover, \{2} \{multiply} \{3}, and of course \{3} \{multiply} \{2}.
             What else have you expected?
