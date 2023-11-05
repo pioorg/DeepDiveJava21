@@ -60,7 +60,7 @@ public class UncertaintyPrincipleOfVirtualThreads {
 
     private static void virtuallyThreadedTasks() throws InterruptedException {
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 100; i < 200; i++) {
             int taskId = i;
             Thread.ofVirtual().start(() -> {
                 handleTask(taskId);
