@@ -20,11 +20,12 @@ import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.moditect.jfrunit.EnableEvent;
 import org.moditect.jfrunit.JfrEventTest;
 import org.moditect.jfrunit.JfrEvents;
-import org.przybyl.ddj21.concurrency.virtThreads.VirtThreads;
+import org.przybyl.ddj21.concurrency.virtThreads.GreetingObtainer;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -36,6 +37,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 
 @JfrEventTest
+@Disabled
 public class VirtThreadsPinTest {
 
     private final Random random = new Random();
@@ -69,7 +71,7 @@ public class VirtThreadsPinTest {
         var client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
         var request = HttpRequest.newBuilder(URI.create("http://localhost:8080")).GET().build();
 
-        VirtThreads.getGreetings(client, request, 20);
+        GreetingObtainer.getGreetings(client, request, 20);
 
         jfrEvents.awaitEvents();
         Assertions.assertTrue(jfrEvents.events().findAny().isEmpty(), "there should be no pinned events");

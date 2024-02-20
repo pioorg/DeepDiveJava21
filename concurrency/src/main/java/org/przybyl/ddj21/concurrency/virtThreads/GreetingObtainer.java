@@ -24,6 +24,18 @@ import java.net.http.HttpResponse;
 
 public class GreetingObtainer {
 
+    public static void getGreetings(HttpClient client, HttpRequest request, int times) throws InterruptedException {
+        Thread last = null;
+        for (int i = 0; i < times; i++) {
+            final var c = i;
+            var g = new GreetingObtainer();
+            last = Thread.startVirtualThread(() -> g.getGreeting(client, request, c));
+            System.out.print(("[ Created " + c + "] "));
+        }
+        System.out.println();
+        last.join();
+    }
+
     public synchronized void getGreeting(HttpClient client, HttpRequest request, int attempt) {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -32,4 +44,5 @@ public class GreetingObtainer {
             throw new RuntimeException(e);
         }
     }
+
 }

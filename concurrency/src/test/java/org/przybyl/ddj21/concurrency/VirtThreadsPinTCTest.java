@@ -27,9 +27,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.NginxContainer;
 import org.testcontainers.containers.ToxiproxyContainer;
-import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.utility.MountableFile;
 
 import java.io.IOException;
@@ -41,24 +40,22 @@ class VirtThreadsPinTCTest {
 
     @Test
     @Disabled
-    public void shouldNotPin() throws IOException {
-
+    public void shouldNotPin() throws IOException, InterruptedException {
         Network network = Network.newNetwork();
-
-        // we're going to copy this file from resources to nginx container
-        var index = MountableFile.forClasspathResource("index.html");
-
-        //preparing artifact to be copied
+        // we're going to copy this file from resources to Elasticsearch container
+        var bulkDataFile = MountableFile.forClasspathResource("bulk.njson");
+        // preparing the artifact to be copied
         Path jarPath = Paths.get("target/concurrency-1.0-SNAPSHOT.jar");
         Assertions.assertTrue(jarPath.toFile().exists(), "The JAR file has to exist first");
 
         try (
-            var nginx = new NginxContainer<>("nginx:1.25.4")
-                .withCopyFileToContainer(index, "/usr/share/nginx/html/index.html")
+            var elasticsearch = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:8.13.2")
+                .withCopyFileToContainer(bulkDataFile, "/tmp/bulk.njson")
+                // don't do that in prod, this is only for test, and avoiding proxying HTTPS issues
+                .withEnv("xpack.security.http.ssl.enabled", "false")
                 .withNetwork(network)
-                .withNetworkAliases("nginx")
-                .waitingFor(new HttpWaitStrategy());
-            var toxiproxy = new ToxiproxyContainer("ghcr.io/shopify/toxiproxy:2.7.0")
+                .withNetworkAliases("elasticsearch");
+            var toxiproxy = new ToxiproxyContainer("ghcr.io/shopify/toxiproxy:2.9.0")
                 .withNetwork(network)
                 .withNetworkAliases("toxiproxy");
             var container = new GenericContainer<>("openjdk:21-slim")
@@ -67,28 +64,38 @@ class VirtThreadsPinTCTest {
                 .withExposedPorts(8000)
                 .withCommand("jwebserver")
         ) {
-            // starting both containers in parallel
-            Stream.of(nginx, toxiproxy, container).parallel().forEach(GenericContainer::start);
+            // starting all three containers in parallel
+            Stream.of(elasticsearch, toxiproxy, container).parallel().forEach(GenericContainer::start);
+
+            var initResult = elasticsearch.execInContainer(
+                "/usr/bin/curl", "-X", "POST",
+                "-H", "Content-Type: application/x-ndjson",
+                "--data-binary", "@/tmp/bulk.njson",
+                "-u", "elastic:changeme",
+                "--silent", "--output", "/dev/null",
+                "http://localhost:9200/_bulk");
+            Assertions.assertEquals(0, initResult.getExitCode());
 
             // creating intoxicated connection to be used between our client and nginx
             ToxiproxyClient client = new ToxiproxyClient(toxiproxy.getHost(), toxiproxy.getControlPort());
-            Proxy proxy = client.createProxy("slow-nginx", "0.0.0.0:8666", "nginx:80");
+            Proxy proxy = client.createProxy("slow-es", "0.0.0.0:8666", "elasticsearch:9200");
             proxy.toxics().latency("latency", ToxicDirection.DOWNSTREAM, 500).setJitter(50);
 
             Assertions.assertDoesNotThrow(() -> {
-
-                // running the client which should call the nginx using intoxicated proxy
+                // running the client which should call the Elasticsearch using intoxicated proxy
                 var result = container.execInContainer(
-                    "java", "--enable-preview", "-Djdk.tracePinnedThreads=full", "-jar", "/tmp/test.jar", "http://toxiproxy:8666");
+                    "java", "--enable-preview",
+                    "-Djdk.tracePinnedThreads=full",
+                    "-jar", "/tmp/test.jar",
+                    "http://toxiproxy:8666");
 
-                // eventually it should exit successfully
-                Assertions.assertEquals(0, result.getExitCode());
+                    // eventually it should exit successfully
+                    Assertions.assertEquals(0, result.getExitCode());
 
                 // and there should be no virtual threads pinned
                 MatcherAssert.assertThat(result.getStdout(), not(containsString("onPinned")));
+                System.out.println(result.getStdout());
             });
-
         }
     }
-
 }
