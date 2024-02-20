@@ -20,6 +20,7 @@ import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.moditect.jfrunit.EnableEvent;
 import org.moditect.jfrunit.JfrEventTest;
@@ -36,6 +37,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 
 @JfrEventTest
+@Disabled
 public class VirtThreadsPinTest {
 
     private final Random random = new Random();

@@ -1,0 +1,4 @@
+{ "index" : { "_index" : "books"} }
+{ "title" : "Effective Java", "author" : "Joshua Bloch", "isbn13" : "978-0134685991" }
+{ "index" : { "_index" : "books"} }
+{ "title" : "Designing Data-Intensive Applications", "author" : "Martin Kleppmann", "isbn13" : "978-1449373320" }

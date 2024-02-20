@@ -16,15 +16,13 @@
  */
 package org.przybyl.ddj21.concurrency.virtThreads;
 
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.time.Duration;
 
 
 public class VirtThreads {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         Thread.ofVirtual().start(() -> {
             Thread ct = Thread.currentThread();
             System.out.printf("Is current thread virtual? %b%n", ct.isVirtual());
@@ -36,9 +34,22 @@ public class VirtThreads {
         }).join();
 
         if (args.length > 0) {
-            var client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
-            var request = HttpRequest.newBuilder(URI.create(args[0])).GET().build();
-            getGreetings(client, request, 20);
+            getBooksFromElasticsearch(args[0], "Java", 20);
+        }
+    }
+
+    public static void getBooksFromElasticsearch(String uri, String query, int times) throws Exception {
+        try (var booksSearcher = new BooksSearcher(uri)) {
+            Thread[] threads = new Thread[times];
+            for (int i = 0; i < times; i++) {
+                final var c = i;
+                threads[i] = Thread.startVirtualThread(() -> booksSearcher.searchBooksWithHttpClient(query, c));
+                System.out.print(("[ Created " + c + "] "));
+            }
+            System.out.println();
+            for (Thread t : threads) {
+                t.join();
+            }
         }
     }
 
