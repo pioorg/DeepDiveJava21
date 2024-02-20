@@ -24,7 +24,7 @@ import java.net.http.HttpResponse;
 
 public class GreetingObtainer {
 
-    public /*synchronized*/ void getGreeting(HttpClient client, HttpRequest request, int attempt) {
+    public synchronized void getGreeting(HttpClient client, HttpRequest request, int attempt) {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.print("[Attempt: " + attempt + ", body: " + response.body() + "] ");
