@@ -85,20 +85,20 @@ public class UncertaintyPrincipleOfVirtualThreads {
 
     public static void handleTask(int id) {
         startedTasks.incrementAndGet();
-        report(id, "1");
-        hardWork(1_000);
-        report(id, "2");
-        hardWork(1_000);
-        report(id, "3");
-        hardWork(1_000);
-        report(id, "4");
-        hardWork(1_000);
-        report(id, "5");
-        hardWork(1_000);
+        hardWork(5_000);
+//        report(id, "1");
+//        hardWork(1_000);
+//        report(id, "2");
+//        hardWork(1_000);
+//        report(id, "3");
+//        hardWork(1_000);
+//        report(id, "4");
+//        hardWork(1_000);
+//        report(id, "5");
+//        hardWork(1_000);
         logger.info(() -> "FINISHED %3d %s".formatted(id, Thread.currentThread()));
         finishedTasks.incrementAndGet();
     }
-
 
     private static void report(int taskId, String stage) {
         logger.fine(() -> "STEP %s %3d %s".formatted(stage, taskId, Thread.currentThread()));

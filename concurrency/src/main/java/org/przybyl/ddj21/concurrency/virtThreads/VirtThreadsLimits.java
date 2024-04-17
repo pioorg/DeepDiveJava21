@@ -21,21 +21,28 @@ import java.time.Instant;
 
 public class VirtThreadsLimits {
 
-    private final static Duration EMULATE_WORK_FOR = Duration.ofSeconds(10);
+    private final static Duration EMULATE_WORK_FOR = Duration.ofSeconds(5);
 
     public static void main(String[] args) throws InterruptedException {
         Instant start = Instant.now();
-        Thread lastThread = null;
 
-        int maxThreadNo = 30_000;
+        int maxThreadNo = 1_000;
+        Thread[] threads = new Thread[maxThreadNo + 1];
         for (int i = 0; i <= maxThreadNo; i++) {
-            lastThread = createThread(i);
-            lastThread.start();
+            threads[i] = createThread(i);
+            threads[i].start();
             if (i % 5_000 == 0) {
                 System.out.printf("Current count %d%n", i);
             }
         }
-        lastThread.join();
+
+        for (int i = 0; i < threads.length; i++) {
+            Thread thread = threads[i];
+            thread.join();
+//            if (i % 5_000 == 0) {
+//                System.out.printf("Finished %d%n", i);
+//            }
+        }
 
         Instant stop = Instant.now();
         Duration took = Duration.between(start, stop);
@@ -53,6 +60,8 @@ public class VirtThreadsLimits {
     static void blockingOperation(int task) {
 //            System.out.printf("Task: %6d, thread %s%n", task, Thread.currentThread());
         sneakySleep(EMULATE_WORK_FOR);
+//            UncertaintyPrincipleOfVirtualThreads.hardWork(EMULATE_WORK_FOR.toMillis());
+
     }
 
 

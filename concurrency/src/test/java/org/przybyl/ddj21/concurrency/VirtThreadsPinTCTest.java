@@ -84,7 +84,7 @@ class VirtThreadsPinTCTest {
             Assertions.assertDoesNotThrow(() -> {
                 // running the client which should call the Elasticsearch using intoxicated proxy
                 var result = container.execInContainer(
-                    "java", "--enable-preview",
+                    "java",
                     "-Djdk.tracePinnedThreads=full",
                     "-jar", "/tmp/test.jar",
                     "http://toxiproxy:8666");

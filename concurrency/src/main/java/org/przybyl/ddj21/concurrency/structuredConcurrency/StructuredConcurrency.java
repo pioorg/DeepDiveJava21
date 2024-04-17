@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.StructuredTaskScope;
 
 
+@SuppressWarnings("ALL")
 public class StructuredConcurrency {
 
     static NameService nameService = new NameService();
